@@ -1,0 +1,406 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;500;600;700&display=swap');
+
+:root {
+  --bg-color: #050505;
+  --panel-bg: rgba(255, 255, 255, 0.03);
+  --panel-border: rgba(255, 255, 255, 0.08);
+  --text-primary: #FAFAFA;
+  --text-secondary: #A1A1AA;
+  --accent-color: #6366F1;
+  --accent-hover: #4F46E5;
+  --danger-color: #EF4444;
+  --btn-bg: rgba(255, 255, 255, 0.05);
+  --btn-hover: rgba(255, 255, 255, 0.1);
+  --btn-active: rgba(255, 255, 255, 0.15);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--bg-color);
+  background-image:
+    radial-gradient(circle at 15% 50%, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.08) 0%, transparent 50%);
+  color: var(--text-primary);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+  overflow: hidden;
+}
+
+#root {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+}
+
+/* App Container */
+.app-container {
+  width: 100%;
+  max-width: 400px;
+  height: 100%;
+  max-height: 850px;
+  display: flex;
+  flex-direction: column;
+  background: var(--panel-bg);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--panel-border);
+  border-radius: 0;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  position: relative;
+}
+
+@media (min-width: 400px) {
+  #root {
+    padding: 1rem;
+  }
+
+  .app-container {
+    border-radius: 32px;
+  }
+}
+
+/* Header Area */
+.header {
+  padding: 1.5rem 1.5rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Currency Section */
+.currency-controls-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.currency-input {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.currency-input-label {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.currency-select-btn {
+  background: var(--btn-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  padding: 0.6rem 0.75rem;
+  color: var(--text-primary);
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.currency-select-btn:hover {
+  background: var(--btn-hover);
+}
+
+.currency-select-btn:active {
+  transform: scale(0.98);
+}
+
+/* Switch Button */
+.switch-btn {
+  background: var(--accent-color);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+  margin-top: 1.5rem;
+  /* align with selectors below labels */
+  flex-shrink: 0;
+}
+
+.switch-btn:hover {
+  background: var(--accent-hover);
+  transform: rotate(180deg) scale(1.05);
+}
+
+.switch-btn:active {
+  transform: rotate(180deg) scale(0.95);
+}
+
+/* Display Area */
+.display-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 1.5rem 2rem;
+  gap: 0.5rem;
+}
+
+.amount-display {
+  font-family: 'Outfit', sans-serif;
+  font-size: 3.5rem;
+  font-weight: 300;
+  color: var(--text-primary);
+  word-break: break-all;
+  line-height: 1.1;
+  text-align: right;
+  letter-spacing: -0.02em;
+}
+
+.converted-display {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.75rem;
+  font-weight: 400;
+  color: var(--text-secondary);
+  word-break: break-all;
+  text-align: right;
+}
+
+/* Numpad Area */
+.numpad {
+  background: rgba(0, 0, 0, 0.2);
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--panel-border);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.num-btn {
+  background: var(--btn-bg);
+  border: 1px solid rgba(255, 255, 255, 0.02);
+  border-radius: 12px;
+  height: 100%;
+  min-height: 48px;
+  color: var(--text-primary);
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.num-btn:hover {
+  background: var(--btn-hover);
+}
+
+.num-btn:active {
+  background: var(--btn-active);
+  transform: scale(0.95);
+}
+
+.num-btn.action {
+  color: var(--accent-color);
+  background: rgba(99, 102, 241, 0.1);
+}
+
+.num-btn.action:hover {
+  background: rgba(99, 102, 241, 0.15);
+}
+
+.num-btn.danger {
+  color: var(--danger-color);
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.num-btn.danger:hover {
+  background: rgba(239, 68, 68, 0.15);
+}
+
+/* Currency Modal */
+.modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.modal-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-content {
+  background: #121212;
+  border-top-left-radius: 32px;
+  border-top-right-radius: 32px;
+  height: 80%;
+  display: flex;
+  flex-direction: column;
+  transform: translateY(100%);
+  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  border-top: 1px solid var(--panel-border);
+}
+
+.modal-overlay.open .modal-content {
+  transform: translateY(0);
+}
+
+.modal-header {
+  padding: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--panel-border);
+}
+
+.modal-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.close-btn:hover {
+  background: var(--btn-bg);
+  color: var(--text-primary);
+}
+
+.search-input-wrapper {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--panel-border);
+}
+
+.search-input {
+  width: 100%;
+  background: var(--btn-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.search-input:focus {
+  border-color: var(--accent-color);
+}
+
+.currency-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.5rem;
+}
+
+.currency-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.currency-item:hover {
+  background: var(--btn-bg);
+}
+
+.currency-item.selected {
+  background: rgba(99, 102, 241, 0.15);
+}
+
+.currency-code {
+  font-weight: 600;
+  font-size: 1.1rem;
+  font-family: 'Outfit', sans-serif;
+}
+
+.currency-name {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
+/* Offline Banner */
+.offline-banner {
+  background: rgba(245, 158, 11, 0.1);
+  color: #FBBF24;
+  padding: 0.5rem;
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border-radius: 12px;
+  margin: -1rem 1.5rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--panel-border);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
