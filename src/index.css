@@ -178,6 +178,15 @@ body {
   letter-spacing: -0.02em;
 }
 
+.intermediate-result {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.5rem;
+  color: var(--text-secondary);
+  opacity: 0.7;
+  font-weight: 400;
+  text-align: right;
+}
+
 .converted-display {
   font-family: 'Outfit', sans-serif;
   font-size: 1.75rem;
@@ -193,7 +202,7 @@ body {
   padding: 1rem 1.5rem;
   border-top: 1px solid var(--panel-border);
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 0.5rem;
   flex: 1;
 }

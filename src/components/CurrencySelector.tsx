@@ -7,9 +7,10 @@ interface CurrencySelectorProps {
     selectedCurrency: string;
     onSelect: (currency: string) => void;
     rates: CurrencyRates | null;
+    recentCurrencies?: string[];
 }
 
-export function CurrencySelector({ label, selectedCurrency, onSelect, rates }: CurrencySelectorProps) {
+export function CurrencySelector({ label, selectedCurrency, onSelect, rates, recentCurrencies }: CurrencySelectorProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
 
@@ -49,6 +50,11 @@ export function CurrencySelector({ label, selectedCurrency, onSelect, rates }: C
             return code.toLowerCase().includes(lowerQuery) || name.includes(lowerQuery);
         });
     }, [searchQuery, availableCurrencies]);
+
+    const recentFiltered = useMemo(() => {
+        if (!recentCurrencies || recentCurrencies.length === 0) return [];
+        return recentCurrencies.filter(c => availableCurrencies.includes(c));
+    }, [recentCurrencies, availableCurrencies]);
 
     const handleSelect = (code: string) => {
         onSelect(code);
@@ -91,6 +97,27 @@ export function CurrencySelector({ label, selectedCurrency, onSelect, rates }: C
                     </div>
 
                     <div className="currency-list">
+                        {!searchQuery && recentFiltered.length > 0 && (
+                            <div className="recent-currencies-section">
+                                <div className="section-title" style={{ padding: '0.5rem 1rem', fontSize: '0.85rem', color: 'var(--text-secondary)', fontWeight: 600, textTransform: 'uppercase' }}>Recent</div>
+                                {recentFiltered.map((code) => {
+                                    const name = getCurrencyName(code);
+                                    return (
+                                        <div
+                                            key={`recent-${code}`}
+                                            className={`currency-item ${selectedCurrency === code ? 'selected' : ''}`}
+                                            onClick={() => handleSelect(code)}
+                                        >
+                                            <div>
+                                                <div className="currency-code">{code}</div>
+                                                <div className="currency-name">{code !== name ? name : ''}</div>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                                <div className="section-title" style={{ padding: '0.5rem 1rem', fontSize: '0.85rem', color: 'var(--text-secondary)', fontWeight: 600, textTransform: 'uppercase', marginTop: '0.5rem' }}>All Currencies</div>
+                            </div>
+                        )}
                         {filteredCurrencies.length > 0 ? (
                             filteredCurrencies.map((code) => {
                                 const name = getCurrencyName(code);
