@@ -35,10 +35,10 @@ export function Numpad({ onInput, onClear, onBackspace, onCalculate }: NumpadPro
             <button
                 className="num-btn danger"
                 onClick={onClear}
-                style={{ gridColumn: 'span 2' }}
             >
                 C
             </button>
+            <button className="num-btn" onClick={() => onInput('000')}>000</button>
             <button
                 className="num-btn action"
                 onClick={onCalculate}

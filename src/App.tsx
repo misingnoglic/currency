@@ -105,8 +105,8 @@ function App() {
         return prev + val;
       }
 
-      if (prev === '0') return val;
-      if (prev === '-0') return '-' + val;
+      if (prev === '0') return val === '000' ? '0' : val;
+      if (prev === '-0') return val === '000' ? '-0' : '-' + val;
       
       if (prev.length >= 32) return prev;
       return prev + val;
