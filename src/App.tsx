@@ -5,8 +5,17 @@ import { CurrencySelector } from './components/CurrencySelector';
 import { Numpad } from './components/Numpad';
 
 function App() {
-  const [rates, setRates] = useState<CurrencyRates | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [rates, setRates] = useState<CurrencyRates | null>(() => {
+    try {
+      const cached = localStorage.getItem('rates_cache');
+      if (cached) {
+        return JSON.parse(cached).rates || null;
+      }
+    } catch {
+      // ignore
+    }
+    return null;
+  });
   const [error, setError] = useState<string | null>(null);
   const [isOffline, setIsOffline] = useState(!navigator.onLine);
 
@@ -24,7 +33,6 @@ function App() {
 
   useEffect(() => {
     const fetchInitialData = async () => {
-      setLoading(true);
       setError(null);
       const data = await fetchRates();
       if (data) {
@@ -32,7 +40,6 @@ function App() {
       } else {
         setError('Failed to fetch conversion rates and no offline cache available.');
       }
-      setLoading(false);
     };
 
     fetchInitialData();
@@ -158,7 +165,7 @@ function App() {
   }, [amountStr]);
 
   const convertedAmount = useMemo(() => {
-    if (!rates || !rates[fromCurrency] || !rates[toCurrency]) return 0;
+    if (!rates || !rates[fromCurrency] || !rates[toCurrency]) return null;
 
     const amount = parsedAmount;
     const fromRate = rates[fromCurrency];
@@ -169,6 +176,7 @@ function App() {
 
   // Format the output
   const formattedConverted = useMemo(() => {
+    if (convertedAmount === null) return null;
     try {
       return new Intl.NumberFormat('en-US', {
         style: 'currency',
@@ -220,16 +228,7 @@ function App() {
     }
   }, [showIntermediateResult, parsedAmount, fromCurrency]);
 
-  if (loading) {
-    return (
-      <div className="app-container" style={{ justifyContent: 'center', alignItems: 'center' }}>
-        <RefreshCw className="animate-spin" size={32} color="var(--accent-color)" />
-        <p style={{ marginTop: '1rem', color: 'var(--text-secondary)' }}>Loading Rates...</p>
-      </div>
-    );
-  }
-
-  if (error) {
+  if (error && !rates) {
     return (
       <div className="app-container" style={{ justifyContent: 'center', alignItems: 'center', padding: '2rem', textAlign: 'center' }}>
         <p style={{ color: 'var(--danger-color)', marginBottom: '1rem' }}>{error}</p>
@@ -285,7 +284,11 @@ function App() {
           </div>
         )}
         <div className="converted-display">
-          = {formattedConverted}
+          {formattedConverted !== null ? `= ${formattedConverted}` : (
+            <span style={{ fontSize: '1rem', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '0.5rem', justifyContent: 'flex-end' }}>
+              <RefreshCw className="animate-spin" size={16} /> Fetching rates...
+            </span>
+          )}
         </div>
       </div>
 
