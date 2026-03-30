@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { RefreshCw, ArrowDownUp } from 'lucide-react';
+import { useRegisterSW } from 'virtual:pwa-register/react';
 import { fetchRates, type CurrencyRates } from './services/api';
 import { CurrencySelector } from './components/CurrencySelector';
 import { Numpad } from './components/Numpad';
@@ -11,6 +12,15 @@ const triggerHaptic = () => {
 };
 
 function App() {
+  const {
+    needRefresh: [needRefresh],
+    updateServiceWorker,
+  } = useRegisterSW({
+    onRegistered(r) {
+      r && setInterval(() => { r.update(); }, 60 * 60 * 1000);
+    }
+  });
+
   const [rates, setRates] = useState<CurrencyRates | null>(() => {
     try {
       const cached = localStorage.getItem('rates_cache');
@@ -298,6 +308,13 @@ function App() {
         onBackspace={handleBackspace}
         onCalculate={handleCalculate}
       />
+
+      {needRefresh && (
+        <div className="update-toast">
+          <span>A new version is available!</span>
+          <button onClick={() => updateServiceWorker(true)} className="update-btn">Refresh</button>
+        </div>
+      )}
     </div>
   );
 }
