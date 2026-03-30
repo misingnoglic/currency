@@ -4,6 +4,12 @@ import { fetchRates, type CurrencyRates } from './services/api';
 import { CurrencySelector } from './components/CurrencySelector';
 import { Numpad } from './components/Numpad';
 
+const triggerHaptic = () => {
+  if (typeof navigator !== 'undefined' && navigator.vibrate) {
+    try { navigator.vibrate(50); } catch {}
+  }
+};
+
 function App() {
   const [rates, setRates] = useState<CurrencyRates | null>(() => {
     try {
@@ -17,7 +23,6 @@ function App() {
     return null;
   });
   const [error, setError] = useState<string | null>(null);
-  const [isOffline, setIsOffline] = useState(!navigator.onLine);
 
   const [fromCurrency, setFromCurrency] = useState(() => localStorage.getItem('lastFromCurrency') || 'USD');
   const [toCurrency, setToCurrency] = useState(() => localStorage.getItem('lastToCurrency') || 'EUR');
@@ -45,17 +50,13 @@ function App() {
     fetchInitialData();
 
     const handleOnline = () => {
-      setIsOffline(false);
       fetchInitialData(); // Refresh rates when coming back online
     };
-    const handleOffline = () => setIsOffline(true);
 
     window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
 
     return () => {
       window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
     };
   }, []);
 
@@ -78,6 +79,7 @@ function App() {
   }, [toCurrency]);
 
   const handleInput = (val: string) => {
+    triggerHaptic();
     setAmountStr(prev => {
       const isOperator = ['+', '-', '*', '/'].includes(val);
       
@@ -121,6 +123,7 @@ function App() {
   };
 
   const handleCalculate = () => {
+    triggerHaptic();
     try {
       const sanitized = amountStr.replace(/[+\-*/.]+$/, '');
       if (/^[0-9+\-*/. ]+$/.test(sanitized)) {
@@ -136,6 +139,7 @@ function App() {
   };
 
   const handleBackspace = () => {
+    triggerHaptic();
     setAmountStr(prev => {
       if (prev.length <= 1) return '0';
       return prev.slice(0, -1);
@@ -143,10 +147,12 @@ function App() {
   };
 
   const clearInput = () => {
+    triggerHaptic();
     setAmountStr('0');
   };
 
   const switchCurrencies = () => {
+    triggerHaptic();
     setFromCurrency(toCurrency);
     setToCurrency(fromCurrency);
   };
@@ -244,12 +250,6 @@ function App() {
 
   return (
     <div className="app-container">
-      {isOffline && (
-        <div className="offline-banner">
-          ⚠️ You are offline. Using cached conversion rates.
-        </div>
-      )}
-
       <div className="header">
         <div className="currency-controls-row">
           <CurrencySelector
